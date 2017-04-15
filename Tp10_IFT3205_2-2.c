@@ -2,7 +2,7 @@
 /* Prog    : Tp10_IFT3205.c                             */
 /* Auteur  : Nicolas Hurtubise, Guillaume Riou          */
 /* Date    : --/--/2010                                 */
-/* version : 7.6~reptillions.ALPHA                      */ 
+/* version :                                            */ 
 /* langage : C                                          */
 /* labo    : DIRO                                       */
 /*------------------------------------------------------*/
@@ -49,25 +49,19 @@ int main(int argc,char **argv)
   float*  SignX=LoadSignalDat("SOUND_GoodMorningVietnam",&length);
   float*  SignY=fmatrix_allocate_1d(length);
 
-
-  //--------------------------------
-  //Restauration  Équation Récurente
-  //--------------------------------
-  // 
-  // y(n) = x(n) + G . x(n-Retard)
-  //
-  //--------------------------------
   float SamplingRate=11025;
   float G=0.9;
-  int   Retard=2205;
+  int Retard = 2*2205;
 
-  for(n=0;n<length;n++)
-     {                 SignY[n]=0.0;
-                       SignY[n]+=SignX[n];
-     if (n>(Retard-1)) SignY[n]+=G*SignX[n-Retard]; }
+  for(n=0;n<length;n++) {
+      SignY[n] = 0.5*SignX[n];
+      
+      if(n > Retard - 1)
+          SignY[n] += 0.5*(SignX[Retard] + G * SignY[n - Retard]);
+  }
 
    //Sauvegarde
-   SaveSignalDatWav("SOUND_GoodMorningVietnam1",SignY,length,SamplingRate); 
+   SaveSignalDatWav("SignalOut2",SignY,length,SamplingRate); 
    //SaveSignalDat("SOUND_GoodMorningVietnam1",SignY,length);
  
    //Visu
